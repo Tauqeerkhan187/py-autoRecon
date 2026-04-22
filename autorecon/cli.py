@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from rich.console import Console
-from rich.table import Any
+from rich.table import Table
 
 from autorecon.core.config_loader import load_config
 from autorecon.core.pipeline import ReconPipeline
@@ -86,7 +86,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def print_target_summary(target: Any) -> None:
     """Display a parsed target in a rich table."""
-    table = table(title="Target Summary")
+    table = Table(title="Target Summary")
     table.add_column("Field", style="cyan", no_wrap=True)
     table.add_column("Value", style="white")
     
