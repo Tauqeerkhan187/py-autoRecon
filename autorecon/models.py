@@ -32,7 +32,8 @@ class SubdomainFinding:
     source: str
     ip_addresses: list[str] = field(default_factory=list)
     
-    def to_dict(self) -> dict[str, Any]
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
     
 @dataclass(slots=True)
 class PortFinding:
