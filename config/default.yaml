@@ -1,0 +1,39 @@
+# Author: TK
+# Date: 22-04-2025
+# Purpose: Store default scan settings such as timeout, concurrency (execute multiple tasks by overlapping execution times.), rate limits, modules.
+
+scan:
+  timeout: 3
+  concurrency: 100
+  rate_limit: 0.2
+  user_agent: "AutoRecon/1.0"
+
+subdomains:
+  enable_crtsh: true
+  enable_bruteforce: true
+  wordlist: "autorecon/wordlist/subdomains.txt"
+
+portscan:
+  ports: "1-1000"
+  banner_grab: true
+
+osint:
+  whois: true
+  dns_records:
+    - A
+    - AAAA
+    - MX
+    - NS
+    - TXT
+
+techfinder:
+  follow_redirects: true
+  max_pages: 1
+
+headers:
+  check_tls: true
+
+dirbrute:
+  enabled: false
+  wordlist: "autorecon/wordlists/directories.txt"
+  

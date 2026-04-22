@@ -28,25 +28,27 @@ class BaseModule(ABC):
             )
             
     def create_result(
-        self,
-        target: Target,
-        *,
-        status: str = "success",
-        data: Any = None,
-        errors: list[str] | None = None,
-        started_at: str | None = None,
-        duration: float = 0.0,
-    ) -> ModuleResult:
-        """Create a standardized mod result."""
-        return ModuleResult(
-            name=self.name,
-            target=target.normalized,
-            status=status,
-            data={} if data is None else data,
-            errors=[] if errors is None else errors,
-            started_at=started_at if started_at is not None else ModuleResult(name=self.name, target=target.normalized).started_at,
-            duration=duration,
-        )
+    self,
+    target: Target,
+    *,
+    status: str = "success",
+    data: Any = None,
+    errors: list[str] | None = None,
+    started_at: str | None = None,
+    duration: float = 0.0,
+) -> ModuleResult:
+        """Create a standardized module result."""
+        result = ModuleResult(
+        name=self.name,
+        target=target.normalized,
+        status=status,
+        data={} if data is None else data,
+        errors=[] if errors is None else errors,
+        duration=duration,
+    )
+        if started_at is not None:
+        result.started_at = started_at
+        return result
         
 async def execute(self, target: Target, config: dict[str, Any]) -> ModuleResult:
     """
