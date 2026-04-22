@@ -11,7 +11,7 @@ scan:
 subdomains:
   enable_crtsh: true
   enable_bruteforce: true
-  wordlist: "autorecon/wordlist/subdomains.txt"
+  wordlist: "autorecon/wordlists/subdomains.txt"
 
 portscan:
   ports: "1-1000"
@@ -36,4 +36,3 @@ headers:
 dirbrute:
   enabled: false
   wordlist: "autorecon/wordlists/directories.txt"
-  
