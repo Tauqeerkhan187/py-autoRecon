@@ -51,7 +51,7 @@ def build_parser() -> argparse.ArgumentParser:
     scan_parser.add_argument(
         "-f",
         "--file",
-        dest="target file",
+        dest="target_file",
         help="Path to a file containing targets.",
     )
     

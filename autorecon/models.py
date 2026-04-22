@@ -111,9 +111,11 @@ class ScanResult:
     target: Target
     metadata: ScanMetaData = field(default_factory=ScanMetaData)
     results: dict[str, Any] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
     
     def add_module_result(self, module_result: ModuleResult) -> None:
         self.results[module_result.name] = module_result.to_dict()
+        
         if module_result.name not in self.metadata.modules_run:
             self.metadata.modules_run.append(module_result.name)
             
