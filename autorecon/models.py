@@ -110,7 +110,7 @@ class ScanMetaData:
 class ScanResult:
     target: Target
     metadata: ScanMetaData = field(default_factory=ScanMetaData)
-    results: dict[str, Any] = field(default_factory=list)
+    results: dict[str, Any] = field(default_factory=dict)
     errors: list[str] = field(default_factory=list)
     
     def add_module_result(self, module_result: ModuleResult) -> None:

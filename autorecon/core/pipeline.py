@@ -8,9 +8,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from autorecon.modules.subdomain import SubdomainModule
 from autorecon.models import ModuleResult, ScanResult, Target
-
+from autorecon.modules.subdomain import SubdomainModule
 class ReconPipeline:
     """
     Core pipeline orchestrator.
@@ -27,6 +26,8 @@ class ReconPipeline:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.modules: list[Any] = []
+        
+        self._register_default_modules()
         
     def _register_default_modules(self) -> None:
         """Register default modules for the pipeline."""
