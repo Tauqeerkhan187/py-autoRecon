@@ -47,7 +47,7 @@ class BaseModule(ABC):
         duration=duration,
     )
         if started_at is not None:
-        result.started_at = started_at
+            result.started_at = started_at
         return result
         
 async def execute(self, target: Target, config: dict[str, Any]) -> ModuleResult:
