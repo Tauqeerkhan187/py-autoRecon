@@ -45,7 +45,7 @@ def _deep_merge(base: ConfigDict, override: ConfigDict) -> ConfigDict:
             and isinstance(merged[key], dict)
             and isinstance(value, dict)
         ):
-            merged[key] = _deep_merge(merge[key], value)
+            merged[key] = _deep_merge(merged[key], value)
         else:
             merged[key] = value
             

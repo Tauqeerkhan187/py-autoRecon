@@ -38,7 +38,7 @@ class SubdomainFinding:
 @dataclass(slots=True)
 class PortFinding:
     host: str
-    port: str
+    port: int
     state: str = "open"
     service: Optional[str] = None
     banner: Optional[str] = None
