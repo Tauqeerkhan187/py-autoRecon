@@ -50,14 +50,11 @@ class BaseModule(ABC):
             result.started_at = started_at
         return result
         
-async def execute(self, target: Target, config: dict[str, Any]) -> ModuleResult:
-    """
-    Wrapper that can be used later by the pipeline to
-    standardize module execution timing and errors.
-    """
-    self.validate_target(target)
-    start = time.perf_counter()
-    result = await self.run(target, config)
-    result.duration = round(time.perf_counter() - start, 4)
-    result.finalize()
-    return result
+    async def execute(self, target: Target, config: dict[str, Any]) -> ModuleResult:
+        """Standardize module execution timing and completion."""
+        self.validate_target(target)
+        start = time.perf_counter()
+        result = await self.run(target, config)
+        result.duration = round(time.perf_counter() - start, 4)
+        result.finalize()
+        return result
