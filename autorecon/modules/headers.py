@@ -18,6 +18,7 @@ class HeadersModule(BaseModule):
         "Content-Security-Policy": "Helps prevent XSS and content injection.",
         "Strict-Transport-Security": "Enforces HTTPS usage.",
         "X-Frame-Options": "Helps protect against clickjacking.",
+        "X-Content-Type-Options": "Prevents MIME-sniffing.",
         "Referrer-Policy": "Controls how much referrer data is exposed.",
         "Permissions-Policy": "Restricts access to browser features.",
     }
