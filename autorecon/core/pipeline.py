@@ -14,6 +14,7 @@ from autorecon.modules.subdomain import SubdomainModule
 from autorecon.modules.portscan import PortScanModule
 from autorecon.modules.headers import HeadersModule
 from autorecon.modules.techfinder import TechFinderModule
+from autorecon.modules.osint import OsintModule
 class ReconPipeline:
     """
     Core pipeline orchestrator.
@@ -39,6 +40,7 @@ class ReconPipeline:
         self.register_module(PortScanModule())
         self.register_module(HeadersModule())
         self.register_module(TechFinderModule())
+        self.register_module(OsintModule())
         
     def register_module(self, module: Any) -> None:
         """Register a module instance with the pipeline."""
