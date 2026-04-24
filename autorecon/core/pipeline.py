@@ -12,6 +12,7 @@ from typing import Any
 from autorecon.models import ModuleResult, ScanResult, Target
 from autorecon.modules.subdomain import SubdomainModule
 from autorecon.modules.portscan import PortScanModule
+from autorecon.modules.headers import HeadersModule
 class ReconPipeline:
     """
     Core pipeline orchestrator.
@@ -35,6 +36,7 @@ class ReconPipeline:
         """Register default modules for the pipeline."""
         self.register_module(SubdomainModule())
         self.register_module(PortScanModule())
+        self.register_module(HeadersModule())
         
     def register_module(self, module: Any) -> None:
         """Register a module instance with the pipeline."""
