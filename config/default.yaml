@@ -14,7 +14,7 @@ subdomains:
   wordlist: "autorecon/wordlists/subdomains.txt"
 
 portscan:
-  ports: "1-1000"
+  ports: "80,443"
   banner_grab: true
 
 osint:
