@@ -5,11 +5,13 @@
 from __future__ import annotations
 
 import json
+import time
 from pathlib import Path
 from typing import Any
 
 from autorecon.models import ModuleResult, ScanResult, Target
 from autorecon.modules.subdomain import SubdomainModule
+from autorecon.modules.portscan import PortScanModule
 class ReconPipeline:
     """
     Core pipeline orchestrator.
@@ -32,6 +34,7 @@ class ReconPipeline:
     def _register_default_modules(self) -> None:
         """Register default modules for the pipeline."""
         self.register_module(SubdomainModule())
+        self.register_module(PortScanModule())
         
     def register_module(self, module: Any) -> None:
         """Register a module instance with the pipeline."""
@@ -40,14 +43,10 @@ class ReconPipeline:
     async def run_target(self, target: Target) -> ScanResult:
         """
         Run the pipeline for a single target.
-        
-        At this stage:
-        - target is already parsed/validated
-        - registered modules are executed in order
-        - results are collected into ScanResult
         """
         scan_result = ScanResult(target=target)
-        
+        start = time.perf_counter()
+
         for module in self.modules:
             try:
                 module_result: ModuleResult = await module.execute(target, self.config)
@@ -62,10 +61,11 @@ class ReconPipeline:
                 )
                 failed_result.finalize()
                 scan_result.add_module_result(failed_result)
-                
+
+        scan_result.metadata.duration = round(time.perf_counter() - start, 4)
         scan_result.metadata.finalize()
         self._write_json_report(scan_result)
-        
+
         return scan_result
     
     async def run_many(self, targets: list[Target]) -> list[ScanResult]:
