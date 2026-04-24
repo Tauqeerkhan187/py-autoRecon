@@ -8,10 +8,10 @@ import asyncio
 import json
 import re
 from pathlib import Path
-from typing import Any
 
 import aiohttp
 import dns.resolver
+from aiohttp import ClientError
 
 from autorecon.models import SubdomainFinding, Target
 from autorecon.modules.base import BaseModule
@@ -25,7 +25,7 @@ class SubdomainModule(BaseModule):
         r"^(?=.{1,253}$)(?!-)(?:[a-zA-Z0-9-]{1,63}\.)+[a-zA-Z0-9-]{2,63}$"
     )
 
-    async def run(self, target: Target, config: dict[str, Any]):
+    async def run(self, target: Target, config: dict):
         errors: list[str] = []
 
         if target.is_ip:
@@ -53,6 +53,11 @@ class SubdomainModule(BaseModule):
                             source="crt.sh",
                             ip_addresses=[],
                         )
+            except asyncio.TimeoutError:
+                errors.append("crt.sh lookup failed: request timed out")
+            except ClientError as exc:
+                message = str(exc).strip() or exc.__class__.__name__
+                errors.append(f"crt.sh lookup failed: HTTP client error ({message})")
             except Exception as exc:
                 message = str(exc).strip() or exc.__class__.__name__
                 errors.append(f"crt.sh lookup failed: {message}")
@@ -67,9 +72,13 @@ class SubdomainModule(BaseModule):
                             source="bruteforce",
                             ip_addresses=[],
                         )
+            except FileNotFoundError as exc:
+                errors.append(f"DNS bruteforce failed: {exc}")
             except Exception as exc:
                 message = str(exc).strip() or exc.__class__.__name__
                 errors.append(f"DNS bruteforce failed: {message}")
+
+        await self._resolve_subdomain_ips(list(discovered.values()))
 
         findings = list(discovered.values())
 
@@ -148,6 +157,19 @@ class SubdomainModule(BaseModule):
         results = await asyncio.gather(*tasks)
 
         return sorted({item for item in results if item is not None})
+
+    async def _resolve_subdomain_ips(self, findings: list[SubdomainFinding]) -> None:
+        """Resolve discovered subdomains to IP addresses."""
+        resolver = dns.resolver.Resolver()
+
+        async def resolve_one(finding: SubdomainFinding) -> None:
+            try:
+                answers = await asyncio.to_thread(resolver.resolve, finding.subdomain, "A")
+                finding.ip_addresses = sorted({str(answer) for answer in answers})
+            except Exception:
+                finding.ip_addresses = []
+
+        await asyncio.gather(*(resolve_one(finding) for finding in findings))
 
     def _normalize_candidate(self, raw_name: str, domain: str) -> str | None:
         """Normalize and validate a candidate subdomain from crt.sh."""
