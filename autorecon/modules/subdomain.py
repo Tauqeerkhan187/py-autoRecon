@@ -1,11 +1,12 @@
 # Author: TK
-# Date: 23-04-2026
+# Date: 24-04-2026
 # Purpose: Perform subdomain enumeration using crt.sh and DNS brute-force.
 
 from __future__ import annotations
 
 import asyncio
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -20,8 +21,11 @@ class SubdomainModule(BaseModule):
     name = "subdomain"
     description = "Enumerate subdomains via crt.sh and DNS brute-force"
 
+    HOSTNAME_PATTERN = re.compile(
+        r"^(?=.{1,253}$)(?!-)(?:[a-zA-Z0-9-]{1,63}\.)+[a-zA-Z0-9-]{2,63}$"
+    )
+
     async def run(self, target: Target, config: dict[str, Any]):
-        findings: list[SubdomainFinding] = []
         errors: list[str] = []
 
         if target.is_ip:
@@ -50,7 +54,8 @@ class SubdomainModule(BaseModule):
                             ip_addresses=[],
                         )
             except Exception as exc:
-                errors.append(f"crt.sh lookup failed: {exc}")
+                message = str(exc).strip() or exc.__class__.__name__
+                errors.append(f"crt.sh lookup failed: {message}")
 
         if use_bruteforce:
             try:
@@ -63,7 +68,8 @@ class SubdomainModule(BaseModule):
                             ip_addresses=[],
                         )
             except Exception as exc:
-                errors.append(f"DNS bruteforce failed: {exc}")
+                message = str(exc).strip() or exc.__class__.__name__
+                errors.append(f"DNS bruteforce failed: {message}")
 
         findings = list(discovered.values())
 
@@ -107,14 +113,8 @@ class SubdomainModule(BaseModule):
                 continue
 
             for raw_name in name_value.splitlines():
-                clean_name = raw_name.strip().lower()
-                if not clean_name:
-                    continue
-
-                if clean_name.startswith("*."):
-                    clean_name = clean_name[2:]
-
-                if clean_name.endswith(domain):
+                clean_name = self._normalize_candidate(raw_name, domain)
+                if clean_name:
                     discovered.add(clean_name)
 
         return sorted(discovered)
@@ -148,3 +148,27 @@ class SubdomainModule(BaseModule):
         results = await asyncio.gather(*tasks)
 
         return sorted({item for item in results if item is not None})
+
+    def _normalize_candidate(self, raw_name: str, domain: str) -> str | None:
+        """Normalize and validate a candidate subdomain from crt.sh."""
+        clean_name = raw_name.strip().lower()
+
+        if not clean_name:
+            return None
+
+        if clean_name.startswith("*."):
+            clean_name = clean_name[2:]
+
+        if "@" in clean_name:
+            return None
+
+        if " " in clean_name:
+            return None
+
+        if not (clean_name == domain or clean_name.endswith(f".{domain}")):
+            return None
+
+        if not self.HOSTNAME_PATTERN.match(clean_name):
+            return None
+
+        return clean_name
