@@ -116,7 +116,7 @@ def _render_module_cards(results: dict) -> str:
         
         if errors:
             section.append("<p><strong>Errors:</strong></p>")
-            section.append("<ul")
+            section.append("<ul>")
             for error in errors:
                 section.append(f"<li>{html.escape(str(error))}</li>")
             section.append("</ul>")
