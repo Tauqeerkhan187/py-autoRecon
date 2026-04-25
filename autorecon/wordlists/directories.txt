@@ -1,0 +1,15 @@
+admin
+login
+dashboard
+api
+robots.txt
+sitemap.xml
+uploads
+assets
+js
+css
+images
+backup
+test
+dev
+staging
