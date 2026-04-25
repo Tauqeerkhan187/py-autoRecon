@@ -3,7 +3,7 @@
 # Purpose: Store default scan settings such as timeout, concurrency (execute multiple tasks by overlapping execution times.), rate limits, modules.
 
 scan:
-  timeout: 3
+  timeout: 10
   concurrency: 100
   rate_limit: 0.2
   user_agent: "AutoRecon/1.0"
