@@ -15,6 +15,7 @@ from autorecon.modules.portscan import PortScanModule
 from autorecon.modules.headers import HeadersModule
 from autorecon.modules.techfinder import TechFinderModule
 from autorecon.modules.osint import OsintModule
+from autorecon.modules.dirbrute import DirBruteModule
 from autorecon.reporting.export import write_final_json, write_summary_csv
 from autorecon.reporting.dashboard import write_html_report
 class ReconPipeline:
@@ -37,6 +38,7 @@ class ReconPipeline:
         self.register_module(HeadersModule())
         self.register_module(TechFinderModule())
         self.register_module(OsintModule())
+        self.register_module(DirBruteModule())
         
     def register_module(self, module: Any) -> None:
         """Register a module instance with the pipeline."""
