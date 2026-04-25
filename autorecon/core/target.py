@@ -90,6 +90,7 @@ def parse_target(raw_target: str, default_scheme: str = "http") -> Target:
         original=raw_target,
         normalized=normalized,
         hostname=hostname,
+        scheme=scheme,
         port=port,
         is_ip=is_ip,
         resolvable=resolvable,
