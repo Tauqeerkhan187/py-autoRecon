@@ -42,7 +42,7 @@ class HeadersModule(BaseModule):
         
         urls_to_try = [
             f"https://{target.hostname}",
-            f"https://{target.hostname}",
+            f"http://{target.hostname}",
         ]
         
         for url in urls_to_try:
