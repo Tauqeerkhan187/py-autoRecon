@@ -187,7 +187,7 @@ async def async_main() -> int:
         console.print(f"[red]AutoRecon error:[/red] {exc}")
         return 1
     except KeyboardInterrupt:
-        console.print(f"[red]Unexpected error:[/red] {exc}")
+        console.print("\n[yellow]Scan cancelled by user.[/yellow]")
         return 1
     
 def main() -> None:
