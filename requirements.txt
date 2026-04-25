@@ -3,3 +3,4 @@ dnspython>=2.4.0
 python-whois>=0.9.4
 rich>=13.7.0
 pyyaml>=6.0
+pytest

@@ -34,5 +34,5 @@ headers:
   check_tls: true
 
 dirbrute:
-  enabled: false
+  enabled: true
   wordlist: "autorecon/wordlists/directories.txt"
