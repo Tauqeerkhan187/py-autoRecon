@@ -1,4 +1,3 @@
-````markdown
 # Py-AutoRecon
 
 A modular Python-based reconnaissance tool built for validating targets, enumerating subdomains, scanning TCP ports, analyzing security headers, fingerprinting web technologies, collecting OSINT, and generating structured reports.
@@ -254,4 +253,3 @@ Unauthorized scanning may be illegal and unethical.
 
 **TK**
 
-```
