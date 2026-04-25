@@ -14,11 +14,13 @@ setup(
     packages=find_packages(),
     python_requires=">=3.10",
     install_requires=[
-        "aiohttp>=3.9.0",
-        "dnspython>=2.4.0",
-        "python-whois>=0.9.4",
-        "rich>=13.7.0",
-        "pyyaml>=6.0",
+        "aiohttp>=3.9.0"
+        "dnspython>=2.4.0"
+        "python-whois>=0.9.4"
+        "rich>=13.7.0"
+        "pyyaml>=6.0"
+        "pytest>=9.0.0"
+        "pytest-asyncio>=1.3.0"
     ],
     entry_points={
         "console_scripts": [
