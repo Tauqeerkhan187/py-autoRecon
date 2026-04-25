@@ -44,7 +44,7 @@ class ReconPipeline:
         """Register a module instance with the pipeline."""
         self.modules.append(module)
         
-    async def run_target(self, target: Target) -> ScanResult:
+    async def run_target(self, target: Target, on_module_start=None) -> ScanResult:
         """
         Run the pipeline for a single target.
         """
@@ -53,6 +53,8 @@ class ReconPipeline:
 
         for module in self.modules:
             try:
+                if on_module_start:
+                    on_module_start(module.name)
                 module_result: ModuleResult = await module.execute(target, self.config)
                 scan_result.add_module_result(module_result)
             except Exception as exc:

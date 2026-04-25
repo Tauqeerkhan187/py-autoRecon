@@ -165,12 +165,14 @@ async def handle_scan(args: argparse.Namespace, config: dict[str, Any]) -> int:
             TextColumn("[progress.description]{task.description}"),
             console=console,
         ) as progress:
-            task = progress.add_task("[cyan]Running pipeline...", total=1)
-            result = await pipeline.run_target(t)
-            progress.update(task, completed=1)
-        all_results.append(result)
+            task = progress.add_task("[cyan]Starting...", total=len(pipeline.modules))
+            
+            def update_progress(module_name):
+                progress.update(task, advance=1, description=f"[cyan]Running {module_name}...")
+                
+            result = await pipeline.run_target(t, on_module_start=update_progress)
 
-    results = all_results
+        results = all_results
     
     if args.json:
         serializable = [result.to_dict() for result in results]
