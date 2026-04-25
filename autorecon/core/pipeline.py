@@ -15,15 +15,11 @@ from autorecon.modules.portscan import PortScanModule
 from autorecon.modules.headers import HeadersModule
 from autorecon.modules.techfinder import TechFinderModule
 from autorecon.modules.osint import OsintModule
+from autorecon.reporting.export import write_final_json, write_summary_csv
+from autorecon.reporting.dashboard import write_html_report
 class ReconPipeline:
     """
     Core pipeline orchestrator.
-    
-    For now, this is a working skeleton:
-    - Accepts validated targets
-    - prepares scan results
-    - supports future module execution
-    - writes final JSON reports
     """
     
     def __init__(self, config: dict[str, Any], output_dir: Path | str = "reports") -> None:
@@ -90,9 +86,10 @@ class ReconPipeline:
         return safe_name
     
     def _write_json_report(self, scan_result: ScanResult) -> None:
-        """Write a JSON report for one scan result."""
-        filename = f"{self._safe_target_name(scan_result.target)}.json"
-        output_path = self.output_dir / filename
-        
-        with output_path.open("w", encoding="utf-8") as file_handle:
-            json.dump(scan_result.to_dict(), file_handle, indent=2)
+        """Write structured report for scan result."""
+        scan_dir = self.output_dir / self._safe_target_name(scan_result.target)
+        scan_dir.mkdir(parents=True, exist_ok=True)
+
+        write_final_json(scan_result, scan_dir)
+        write_summary_csv(scan_result, scan_dir)
+        write_html_report(scan_result, scan_dir)
