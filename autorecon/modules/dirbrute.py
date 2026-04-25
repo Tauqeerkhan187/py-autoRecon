@@ -24,8 +24,8 @@ class DirBruteModule(BaseModule):
             return self.create_result(
                 target,
                 status="skipped",
-                data=[]
-                errors=["Target is not resolvable, skipping directory brute-force."]
+                data=[],
+                errors=["Target is not resolvable, skipping directory brute-force."],
             
             )
         
