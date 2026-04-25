@@ -171,8 +171,9 @@ async def handle_scan(args: argparse.Namespace, config: dict[str, Any]) -> int:
                 progress.update(task, advance=1, description=f"[cyan]Running {module_name}...")
                 
             result = await pipeline.run_target(t, on_module_start=update_progress)
+        all_results.append(result)
 
-        results = all_results
+    results = all_results
     
     if args.json:
         serializable = [result.to_dict() for result in results]
