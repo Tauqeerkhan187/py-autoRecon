@@ -20,6 +20,15 @@ from autorecon.core.target import load_targets_from_file, parse_target
 from autorecon.exceptions import AutoReconError
 from autorecon.reporting.export import build_module_summary_rows
 
+BANNER = r"""
+    ___         __        ____                      
+   /   | __  __/ /_____  / __ \___  _________  ____ 
+  / /| |/ / / / __/ __ \/ /_/ / _ \/ ___/ __ \/ __ \
+ / ___ / /_/ / /_/ /_/ / _, _/  __/ /__/ /_/ / / / /
+/_/  |_\__,_/\__/\____/_/ |_|\___/\___/\____/_/ /_/ 
+                                          v1.0 by TK
+"""
+
 console = Console()
 
 def build_parser() -> argparse.ArgumentParser:
@@ -143,8 +152,25 @@ async def handle_scan(args: argparse.Namespace, config: dict[str, Any]) -> int:
     
     pipeline = ReconPipeline(config=config, output_dir=output_dir)
     
-    console.print(f"[bold green]Loaded[/bold green] {len(targets)} target(s).")
-    results = await pipeline.run_many(targets)
+    from rich.progress import Progress, SpinnerColumn, TextColumn
+
+    console.print(BANNER, style="cyan")
+    console.print(f"[bold green]Loaded[/bold green] {len(targets)} target(s).\n")
+
+    all_results = []
+    for t in targets:
+        console.rule(f"[bold]{t.normalized}[/bold]")
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            console=console,
+        ) as progress:
+            task = progress.add_task("[cyan]Running pipeline...", total=1)
+            result = await pipeline.run_target(t)
+            progress.update(task, completed=1)
+        all_results.append(result)
+
+    results = all_results
     
     if args.json:
         serializable = [result.to_dict() for result in results]
