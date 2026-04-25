@@ -18,6 +18,7 @@ from autorecon.core.config_loader import load_config
 from autorecon.core.pipeline import ReconPipeline
 from autorecon.core.target import load_targets_from_file, parse_target
 from autorecon.exceptions import AutoReconError
+from autorecon.reporting.export import build_module_summary_rows
 
 console = Console()
 
@@ -102,6 +103,26 @@ def print_target_summary(target: Any) -> None:
     
     console.print(table)
     
+def print_module_summary(scan_result: Any) -> None:
+    """Display a compact per-module summary."""
+    rows = build_module_summary_rows(scan_result)
+
+    table = Table(title="Module Summary")
+    table.add_column("Module", style="cyan", no_wrap=True)
+    table.add_column("Status", style="white")
+    table.add_column("Items", justify="right")
+    table.add_column("Errors", justify="right")
+
+    for row in rows:
+        table.add_row(
+            str(row["module"]),
+            str(row["status"]),
+            str(row["item_count"]),
+            str(row["error_count"]),
+        )
+
+    console.print(table)
+    
 async def handle_scan(args: argparse.Namespace, config: dict[str, Any]) -> int:
     """Handle the scan command."""
     if not args.target and not args.target_file:
@@ -131,12 +152,13 @@ async def handle_scan(args: argparse.Namespace, config: dict[str, Any]) -> int:
     else:
         for result in results:
             print_target_summary(result.target)
+            print_module_summary(result)
             console.print(
                 f"[green]Modules run:[/green] {', '.join(result.metadata.modules_run) if result.metadata.modules_run else 'None yet'}"
             )
+            console.print(f"[green]Duration:[/green] {result.metadata.duration} seconds")
             console.print(f"[green]Errors:[/green] {result.errors if result.errors else 'None'}")
             console.rule()
-    return 0
 
 def handle_validate(args: argparse.Namespace) -> int:
     """Handle the validate command."""
